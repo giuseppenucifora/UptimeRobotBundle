@@ -1,0 +1,6 @@
+uptime_robot:
+    credentials:
+        api_key: '%env(UPTIMEROBOT_API_KEY)%'
+    configurations:
+        interval: '%env(UPTIMEROBOT_INTERVAL)%'
+        alertContacts: '%env(UPTIMEROBOT_ALERT_CONTACTS)%'

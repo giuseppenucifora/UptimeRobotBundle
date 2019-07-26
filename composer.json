@@ -1,0 +1,31 @@
+{
+    "name": "giuseppenuc/uptimerobot-bundle",
+    "description": "Uptime Robot SF4 Bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Giuseppe Nucifora",
+            "email": "me@giuseppenucifora.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.1",
+        "symfony/framework-bundle": "~4.3",
+        "symfony/flex": "^1.2",
+        "vdhicts/uptimerobot-api-client": "^1.1",
+        "symfony/dependency-injection": "~4.0",
+        "symfony/config": "~4.0",
+        "symfony/serializer": "~4.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pn\\UptimeRobotBundle\\": "src/"
+        }
+    }
+}

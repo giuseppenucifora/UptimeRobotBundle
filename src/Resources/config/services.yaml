@@ -1,0 +1,13 @@
+parameters:
+  uptime_robot.credentials.api_key: ''
+  uptime_robot.configurations.interval: ''
+  uptime_robot.configurations.alert_contacts: ''
+
+
+services:
+  Pn\UptimeRobotBundle\Service\UptimeRobotApiService:
+    class: Pn\UptimeRobotBundle\Service\UptimeRobotApiService
+    public: true
+    arguments:
+      - '%uptime_robot.credentials.api_key%'
+      - '@Symfony\Component\Serializer\SerializerInterface'
