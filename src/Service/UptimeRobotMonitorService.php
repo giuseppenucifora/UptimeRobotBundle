@@ -126,23 +126,28 @@ class UptimeRobotMonitorService extends UptimeRobotService
                 $alertContactsString .= $alertContact->getIdForMonitorRequest($threshold, $recurrence);
             }
 
+            $params = [
+                'id' => $oldMonitor->getId(),
+                'friendly_name' => $monitor->getFriendlyName(),
+                'url' => $monitor->getUrl(),
+                'type' => $monitor->getType(),
+                'sub_type' => $monitor->getSubType(),
+                'port' => $monitor->getPort(),
+                'keyword_type' => $monitor->getKeywordType(),
+                'keyword_value' => $monitor->getKeywordValue(),
+                'interval' => $monitor->getInterval(),
+                'http_username' => $monitor->getHttpUsername(),
+                'http_password' => $monitor->getHttpPassword(),
+                'mwindows' => ''
+            ];
+
+            if (!empty($alertContactsString)){
+                $params['alert_contacts'] = $alertContactsString;
+            }
+
             $jsonResponse = $this->client->perform(
                 self::EDIT_MONITOR,
-                [
-                    'id' => $oldMonitor->getId(),
-                    'friendly_name' => $monitor->getFriendlyName(),
-                    'url' => $monitor->getUrl(),
-                    'type' => $monitor->getType(),
-                    'sub_type' => $monitor->getSubType(),
-                    'port' => $monitor->getPort(),
-                    'keyword_type' => $monitor->getKeywordType(),
-                    'keyword_value' => $monitor->getKeywordValue(),
-                    'interval' => $monitor->getInterval(),
-                    'http_username' => $monitor->getHttpUsername(),
-                    'http_password' => $monitor->getHttpPassword(),
-                    'alert_contacts' => $alertContactsString,
-                    'mwindows' => ''
-                ]
+                $params
             );
         } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
             $this->logError($exception);

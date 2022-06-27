@@ -9,7 +9,7 @@ use Vdhicts\UptimeRobot\Client\Configuration;
 
 class UptimeRobotApiService
 {
-    /** @var \Vdhicts\UptimeRobot\Client\Client $client */
+    /** @var $client */
     protected $client;
 
     /** @var SerializerInterface $serializer */
@@ -22,7 +22,7 @@ class UptimeRobotApiService
     private $alertContactService;
 
     /**
-     * @var SymfonyStyle
+     * @var
      */
     private $io;
 
@@ -34,9 +34,7 @@ class UptimeRobotApiService
         $this->serializer = $serializer;
     }
 
-    /**
-     * @return SymfonyStyle
-     */
+
     public function getIo(): SymfonyStyle
     {
         return $this->io;
