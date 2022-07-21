@@ -223,7 +223,7 @@ class UptimeRobotMonitorService extends UptimeRobotService
      * @param bool $forceRefresh
      * @return mixed|Monitor|null
      */
-    public function find($id, $forceRefresh = false)
+    public function find($id = null, $name = null, $url = null, $forceRefresh = false)
     {
         if (empty($this->cachedMonitors) || $forceRefresh) {
             $this->getMonitors();
@@ -231,7 +231,7 @@ class UptimeRobotMonitorService extends UptimeRobotService
 
         /** @var Monitor $monitor */
         foreach ($this->cachedMonitors as $monitor) {
-            if ($monitor->getId() === $id) {
+            if ($monitor->getId() === $id || $monitor->getFriendlyName() === $name || $monitor->getUrl() === $url) {
                 return $monitor;
             }
         }

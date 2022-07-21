@@ -144,7 +144,7 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
      * @param bool $forceRefresh
      * @return mixed|AlertContact|null
      */
-    public function find($id, $forceRefresh = false)
+    public function find($id = null, $name = null, $value = null, $forceRefresh = false)
     {
         if (empty($this->cachedAlertContacts) || $forceRefresh) {
             $this->getAlertContacts();
@@ -152,7 +152,28 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
 
         /** @var AlertContact $alertContact */
         foreach ($this->cachedAlertContacts as $alertContact) {
-            if ($alertContact->getId() === $id) {
+            if ($alertContact->getId() === $id || $alertContact->getFriendlyName() === $name || $alertContact->getValue() === $value ) {
+                return $alertContact;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $id
+     * @param bool $forceRefresh
+     * @return mixed|AlertContact|null
+     */
+    public function findbyName($name, $forceRefresh = false)
+    {
+        if (empty($this->cachedAlertContacts) || $forceRefresh) {
+            $this->getAlertContacts();
+        }
+
+        /** @var AlertContact $alertContact */
+        foreach ($this->cachedAlertContacts as $alertContact) {
+            if ($alertContact->getFriendlyName() === $name) {
                 return $alertContact;
             }
         }
