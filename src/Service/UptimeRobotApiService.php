@@ -9,6 +9,8 @@ use Vdhicts\UptimeRobot\Client\Configuration;
 
 class UptimeRobotApiService
 {
+    private $apiKey;
+
     /** @var $client */
     protected $client;
 
@@ -28,10 +30,20 @@ class UptimeRobotApiService
 
     public function __construct(string $apiKey, SerializerInterface $serializer)
     {
-        $configuration = new Configuration($apiKey);
+        $this->apiKey = $apiKey;
+        $configuration = new Configuration($this->apiKey);
 
         $this->client = new Client($configuration);
         $this->serializer = $serializer;
+    }
+
+    /**
+     * Check if apikey is setted and suppose that api is valid
+     *
+     * @return bool
+     */
+    public function isActive(){
+        return !empty($this->apiKey);
     }
 
 
