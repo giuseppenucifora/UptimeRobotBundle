@@ -39,19 +39,20 @@ class UptimeRobotMonitorService extends UptimeRobotService
         }
         $response = json_decode($jsonResponse);
 
-        switch ($response->stat) {
-            case 'ok':
-                foreach ($response->monitors as $monitorObj) {
-                    $monitor = Monitor::getMonitorFromResponse($monitorObj);
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    foreach ($response->monitors as $monitorObj) {
+                        $monitor = Monitor::getMonitorFromResponse($monitorObj);
 
-                    $this->cachedMonitors[] = $monitor;
-                }
-                break;
-            default:
-                return false;
-                break;
+                        $this->cachedMonitors[] = $monitor;
+                    }
+                    break;
+                default:
+                    return false;
+                    break;
+            }
         }
-
         return $this->cachedMonitors;
     }
 
@@ -96,16 +97,17 @@ class UptimeRobotMonitorService extends UptimeRobotService
 
         $response = json_decode($jsonResponse);
 
-
-        switch ($response->stat) {
-            case 'ok':
-                $monitor->setId($response->monitor->id);
-                return $monitor;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    $monitor->setId($response->monitor->id);
+                    return $monitor;
+                    break;
+                default:
+                    break;
+            }
         }
+        return null;
 
     }
 
