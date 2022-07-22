@@ -76,18 +76,18 @@ class Monitor
         $monitor->setId($monitorObj->id);
         $monitor->setFriendlyName($monitorObj->friendly_name);
         $monitor->setUrl($monitorObj->url);
-        $monitor->setType($monitorObj->type);
+        $monitor->setType((int)$monitorObj->type);
         $monitor->setSubType($monitorObj->sub_type);
-        $monitor->setKeywordType($monitorObj->keyword_type);
+        $monitor->setKeywordType((int)$monitorObj->keyword_type);
         $monitor->setKeywordValue($monitorObj->keyword_value);
         $monitor->setHttpUsername($monitorObj->http_username);
         $monitor->setHttpPassword($monitorObj->http_password);
         $monitor->setPort($monitorObj->port);
-        $monitor->setInterval($monitorObj->interval);
-        $monitor->setStatus($monitorObj->status);
+        $monitor->setInterval((int)$monitorObj->interval);
+        $monitor->setStatus((int)$monitorObj->status);
 
         $date = new \DateTime();
-        $date->setTimestamp($monitorObj->create_datetime);
+        $date->setTimestamp((int)$monitorObj->create_datetime);
         $monitor->setCreateDatetime($date);
 
         return $monitor;
