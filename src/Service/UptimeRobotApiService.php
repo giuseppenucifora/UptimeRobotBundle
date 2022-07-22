@@ -97,10 +97,11 @@ class UptimeRobotApiService
             $alertContacts = explode(',', $alertContactsString);
 
             foreach ($alertContacts as $alertContactName) {
-
-                $alertContact = $this->alertContactService->findbyName($alertContactName);
-                if ($alertContact instanceof AlertContact) {
-                    $this->alertContacts[] = $alertContact;
+                if (!empty($alertContactName)) {
+                    $alertContact = $this->alertContactService->findbyName($alertContactName);
+                    if ($alertContact instanceof AlertContact) {
+                        $this->alertContacts[] = $alertContact;
+                    }
                 }
             }
         }
