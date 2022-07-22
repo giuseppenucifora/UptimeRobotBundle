@@ -26,6 +26,8 @@ class Monitor
     const KEYWORD_TYPE_EXIST = 1;
     const KEYWORD_TYPE_NOT_EXIST = 2;
 
+    const ALLOWED_KEYWORK_TYPES = [self::KEYWORD_TYPE_EXIST, self::KEYWORD_TYPE_NOT_EXIST];
+
     /** @var int */
     private $id;
 
@@ -41,7 +43,7 @@ class Monitor
     /** @var string */
     private $subType;
 
-    /** @var string */
+    /** @var int */
     private $keywordType;
 
     /** @var string */
@@ -201,7 +203,7 @@ class Monitor
     /**
      * @return string
      */
-    public function getKeywordType(): ?string
+    public function getKeywordType(): ?int
     {
         return $this->keywordType;
     }
@@ -210,9 +212,11 @@ class Monitor
      * @param string $keywordType
      * @return Monitor
      */
-    public function setKeywordType(?string $keywordType): Monitor
+    public function setKeywordType(?int $keywordType): Monitor
     {
-        $this->keywordType = $keywordType;
+        if (in_array($keywordType, self::ALLOWED_KEYWORK_TYPES, true)){
+            $this->keywordType = $keywordType;
+        }
         return $this;
     }
 
