@@ -2,6 +2,7 @@
 
 namespace Pn\UptimeRobotBundle\Service;
 
+use Pn\UptimeRobotBundle\Model\AlertContact;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\SerializerInterface;
 use Vdhicts\UptimeRobot\Client\Client;
@@ -10,6 +11,12 @@ use Vdhicts\UptimeRobot\Client\Configuration;
 class UptimeRobotApiService
 {
     private $apiKey;
+
+    private $interval;
+
+    private string $alertContactsString;
+
+    private array $alertContacts;
 
     /** @var $client */
     protected $client;
@@ -35,6 +42,7 @@ class UptimeRobotApiService
 
         $this->client = new Client($configuration);
         $this->serializer = $serializer;
+        $this->alertContacts = [];
     }
 
     /**
@@ -42,7 +50,8 @@ class UptimeRobotApiService
      *
      * @return bool
      */
-    public function isActive(){
+    public function isActive()
+    {
         return !empty($this->apiKey);
     }
 
@@ -63,12 +72,63 @@ class UptimeRobotApiService
     }
 
     /**
+     * @return mixed
+     */
+    public function getInterval()
+    {
+        return $this->interval;
+    }
+
+    /**
+     * @param mixed $interval
+     */
+    public function setInterval($interval): void
+    {
+        $this->interval = $interval;
+    }
+
+    /**
+     * @param mixed $alertContactsString
+     */
+    public function setAlertContactsString(?string $alertContactsString): void
+    {
+        $this->alertContactsString = $alertContactsString;
+        if (!empty($alertContactsString) && $this->isActive()) {
+            $alertContacts = explode(',', $alertContactsString);
+
+            foreach ($alertContacts as $alertContactName) {
+
+                $alertContact = $this->alertContactService->findbyName($alertContactName);
+                if ($alertContact instanceof AlertContact) {
+                    $this->alertContacts[] = $alertContact;
+                }
+            }
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAlertContacts()
+    {
+        return $this->alertContacts;
+    }
+
+    /**
+     * @param mixed $alertContacts
+     */
+    public function setAlertContacts($alertContacts): void
+    {
+        $this->alertContacts = $alertContacts;
+    }
+
+    /**
      * @return UptimeRobotMonitorService
      */
     public function getMonitorService(): UptimeRobotMonitorService
     {
         if (null === $this->monitorService) {
-            $this->monitorService = New UptimeRobotMonitorService($this->client);
+            $this->monitorService = new UptimeRobotMonitorService($this->client);
             if ($this->io instanceof SymfonyStyle) {
                 $this->monitorService->setIo($this->io);
             }
@@ -82,7 +142,7 @@ class UptimeRobotApiService
     public function getAlertContactService(): UptimeRobotAlertContacsService
     {
         if (null === $this->alertContactService) {
-            $this->alertContactService = New UptimeRobotAlertContacsService($this->client);
+            $this->alertContactService = new UptimeRobotAlertContacsService($this->client);
             if ($this->io instanceof SymfonyStyle) {
                 $this->alertContactService->setIo($this->io);
             }
