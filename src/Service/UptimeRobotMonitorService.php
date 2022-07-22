@@ -87,8 +87,7 @@ class UptimeRobotMonitorService extends UptimeRobotService
                     'http_username' => $monitor->getHttpUsername(),
                     'http_password' => $monitor->getHttpPassword(),
                     'alert_contacts' => $alertContactsString,
-                    'mwindows' => '',
-                    'status' => $monitor->getStatus()
+                    'mwindows' => ''
                 ]
             );
         } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
