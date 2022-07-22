@@ -12,6 +12,6 @@ services:
       - '%uptime_robot.credentials.api_key%'
       - '@Symfony\Component\Serializer\SerializerInterface'
     calls:
-      - setInterval: '%uptime_robot.configurations.interval%'
-      - setAlertContactsString: '%uptime_robot.configurations.alert_contacts%'
+      - setInterval: ['%uptime_robot.configurations.interval%']
+      - setAlertContactsString: ['%uptime_robot.configurations.alert_contacts%']
 
