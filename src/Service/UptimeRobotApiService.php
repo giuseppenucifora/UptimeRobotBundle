@@ -14,9 +14,9 @@ class UptimeRobotApiService
 
     private $interval;
 
-    private string $alertContactsString;
+    private $alertContactsString;
 
-    private array $alertContacts;
+    private $alertContacts;
 
     /** @var $client */
     protected $client;
