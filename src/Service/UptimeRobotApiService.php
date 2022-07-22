@@ -98,7 +98,7 @@ class UptimeRobotApiService
 
             foreach ($alertContacts as $alertContactName) {
                 if (!empty($alertContactName)) {
-                    $alertContact = $this->alertContactService->findbyName($alertContactName);
+                    $alertContact = $this->getAlertContactService()->findbyName($alertContactName);
                     if ($alertContact instanceof AlertContact) {
                         $this->alertContacts[] = $alertContact;
                     }
