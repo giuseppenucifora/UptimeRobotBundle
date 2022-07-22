@@ -86,7 +86,8 @@ class UptimeRobotMonitorService extends UptimeRobotService
                     'http_username' => $monitor->getHttpUsername(),
                     'http_password' => $monitor->getHttpPassword(),
                     'alert_contacts' => $alertContactsString,
-                    'mwindows' => ''
+                    'mwindows' => '',
+                    'status' => $monitor->getStatus()
                 ]
             );
         } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
@@ -138,7 +139,8 @@ class UptimeRobotMonitorService extends UptimeRobotService
                 'interval' => $monitor->getInterval(),
                 'http_username' => $monitor->getHttpUsername(),
                 'http_password' => $monitor->getHttpPassword(),
-                'mwindows' => ''
+                'mwindows' => '',
+                'status' => $monitor->getStatus()
             ];
 
             if (!empty($alertContactsString)){
