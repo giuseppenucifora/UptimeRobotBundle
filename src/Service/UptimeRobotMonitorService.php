@@ -143,7 +143,7 @@ class UptimeRobotMonitorService extends UptimeRobotService
                 'status' => $monitor->getStatus()
             ];
 
-            if (!empty($alertContactsString)){
+            if (!empty($alertContactsString)) {
                 $params['alert_contacts'] = $alertContactsString;
             }
 
@@ -156,15 +156,16 @@ class UptimeRobotMonitorService extends UptimeRobotService
         }
 
         $response = json_decode($jsonResponse);
-
-        switch ($response->stat) {
-            case 'ok':
-                $monitor->setId($response->monitor->id);
-                return $monitor;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    $monitor->setId($response->monitor->id);
+                    return $monitor;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
         }
     }
 
@@ -183,15 +184,17 @@ class UptimeRobotMonitorService extends UptimeRobotService
         }
 
         $response = json_decode($jsonResponse);
-
-        switch ($response->stat) {
-            case 'ok':
-                return $monitor;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    return $monitor;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
         }
+        return null;
     }
 
     /**
@@ -209,15 +212,17 @@ class UptimeRobotMonitorService extends UptimeRobotService
         }
 
         $response = json_decode($jsonResponse);
-
-        switch ($response->stat) {
-            case 'ok':
-                return $monitor;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    return $monitor;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
         }
+        return null;
     }
 
     /**

@@ -26,19 +26,21 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
 
         $response = json_decode($jsonResponse);
 
-        switch ($response->stat) {
-            case 'ok':
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
 
-                foreach ($response->alert_contacts as $alert_contact) {
+                    foreach ($response->alert_contacts as $alert_contact) {
 
-                    $alertContact = AlertContact::getAlertContactFromResponse($alert_contact);
+                        $alertContact = AlertContact::getAlertContactFromResponse($alert_contact);
 
-                    $this->cachedAlertContacts[] = $alertContact;
-                }
+                        $this->cachedAlertContacts[] = $alertContact;
+                    }
 
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
         }
 
 
@@ -66,17 +68,18 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
         }
 
         $response = json_decode($jsonResponse);
-
-        switch ($response->stat) {
-            case 'ok':
-                $alertContact->setId($response->alertcontact->id);
-                return $alertContact;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    $alertContact->setId($response->alertcontact->id);
+                    return $alertContact;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
         }
-
+        return null;
     }
 
     /**
@@ -102,14 +105,16 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
 
         $response = json_decode($jsonResponse);
 
-        switch ($response->stat) {
-            case 'ok':
-                $alertContact->setId($response->alert_contact->id);
-                return $alertContact;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    $alertContact->setId($response->alert_contact->id);
+                    return $alertContact;
+                    break;
+                default:
+                    return null;
+                    break;
+            }
         }
     }
 
@@ -128,15 +133,17 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
         }
 
         $response = json_decode($jsonResponse);
-
-        switch ($response->stat) {
-            case 'ok':
-                return $alertContact;
-                break;
-            default:
-                return false;
-                break;
+        if ($response) {
+            switch ($response->stat) {
+                case 'ok':
+                    return $alertContact;
+                    break;
+                default:
+                    return null;
+                    break;
+            }
         }
+        return null;
     }
 
     /**
@@ -152,7 +159,7 @@ class UptimeRobotAlertContacsService extends UptimeRobotService
 
         /** @var AlertContact $alertContact */
         foreach ($this->cachedAlertContacts as $alertContact) {
-            if ($alertContact->getId() === $id || $alertContact->getFriendlyName() === $name || $alertContact->getValue() === $value ) {
+            if ($alertContact->getId() === $id || $alertContact->getFriendlyName() === $name || $alertContact->getValue() === $value) {
                 return $alertContact;
             }
         }
