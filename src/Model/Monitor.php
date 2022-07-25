@@ -345,4 +345,9 @@ class Monitor
         $this->createDatetime = $createDatetime;
         return $this;
     }
+
+    public function getErrors()
+    {
+
+    }
 }

@@ -4,6 +4,7 @@ namespace Pn\UptimeRobotBundle\Service;
 
 use Pn\UptimeRobotBundle\Model\AlertContact;
 use Pn\UptimeRobotBundle\Model\Monitor;
+use Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException;
 
 class UptimeRobotMonitorService extends UptimeRobotService
 {
@@ -26,7 +27,8 @@ class UptimeRobotMonitorService extends UptimeRobotService
 
     /**
      * @param array $params
-     * @return array|bool
+     * @return array
+     * @throws FailedRequestException
      */
     public function getMonitors($params = [])
     {
@@ -34,10 +36,11 @@ class UptimeRobotMonitorService extends UptimeRobotService
 
         try {
             $jsonResponse = $this->client->perform(self::GET_MONITORS, $params);
-        } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
+        } catch (FailedRequestException $exception) {
             $this->logError($exception);
+            throw $exception;
         }
-        $response = json_decode($jsonResponse);
+        $response = json_decode($jsonResponse, false);
 
         if ($response) {
             switch ($response->stat) {
@@ -48,19 +51,23 @@ class UptimeRobotMonitorService extends UptimeRobotService
                         $this->cachedMonitors[] = $monitor;
                     }
                     break;
-                default:
-                    return false;
-                    break;
             }
+
+            return $this->cachedMonitors;
         }
-        return $this->cachedMonitors;
+
+        throw new FailedRequestException($jsonResponse);
     }
 
     /**
      * @param Monitor $monitor
-     * @return bool|Monitor
+     * @param array $alertContacts
+     * @param int $threshold
+     * @param int $recurrence
+     * @return Monitor|null
+     * @throws FailedRequestException
      */
-    public function create(Monitor $monitor, array $alertContacts, $threshold = 0, $recurrence = 0)
+    public function create(Monitor $monitor, array $alertContacts, int $threshold = 0, int $recurrence = 0): ?Monitor
     {
         try {
             $alertContactsString = '';
@@ -90,30 +97,33 @@ class UptimeRobotMonitorService extends UptimeRobotService
                     'mwindows' => ''
                 ]
             );
-        } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
+        } catch (FailedRequestException $exception) {
             $this->logError($exception);
+            throw $exception;
         }
 
-        $response = json_decode($jsonResponse);
+        $response = json_decode($jsonResponse, false);
 
         if ($response) {
             switch ($response->stat) {
                 case 'ok':
                     $monitor->setId($response->monitor->id);
                     return $monitor;
-                    break;
                 default:
-                    break;
+                    return null;
             }
         }
-        return null;
-
+        throw new FailedRequestException($jsonResponse);
     }
 
     /**
      * @param Monitor $oldMonitor
      * @param Monitor $monitor
-     * @return bool|Monitor
+     * @param array $alertContacts
+     * @param int $threshold
+     * @param int $recurrence
+     * @return Monitor|null
+     * @throws FailedRequestException
      */
     public function update(Monitor $oldMonitor, Monitor $monitor, array $alertContacts, $threshold = 0, $recurrence = 0)
     {
@@ -152,27 +162,29 @@ class UptimeRobotMonitorService extends UptimeRobotService
                 self::EDIT_MONITOR,
                 $params
             );
-        } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
+        } catch (FailedRequestException $exception) {
             $this->logError($exception);
+            throw $exception;
         }
 
-        $response = json_decode($jsonResponse);
+        $response = json_decode($jsonResponse, false);
         if ($response) {
             switch ($response->stat) {
                 case 'ok':
                     $monitor->setId($response->monitor->id);
                     return $monitor;
-                    break;
                 default:
-                    return false;
-                    break;
+                    return null;
+
             }
         }
+        throw new FailedRequestException($jsonResponse);
     }
 
     /**
      * @param Monitor $monitor
-     * @return bool|Monitor
+     * @return Monitor|null
+     * @throws FailedRequestException
      */
     public function delete(Monitor $monitor)
     {
@@ -180,27 +192,29 @@ class UptimeRobotMonitorService extends UptimeRobotService
             $jsonResponse = $this->client->perform(self::DELETE_MONITOR, [
                 'id' => $monitor->getId()
             ]);
-        } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
+        } catch (FailedRequestException $exception) {
             $this->logError($exception);
+            throw $exception;
         }
 
-        $response = json_decode($jsonResponse);
+        $response = json_decode($jsonResponse, false);
         if ($response) {
             switch ($response->stat) {
                 case 'ok':
                     return $monitor;
-                    break;
                 default:
-                    return false;
-                    break;
+                    return null;
+
             }
         }
-        return null;
+
+        throw new FailedRequestException($jsonResponse);
     }
 
     /**
      * @param Monitor $monitor
-     * @return bool|Monitor
+     * @return Monitor|null
+     * @throws FailedRequestException
      */
     public function reset(Monitor $monitor)
     {
@@ -208,30 +222,33 @@ class UptimeRobotMonitorService extends UptimeRobotService
             $jsonResponse = $this->client->perform(self::RESET_MONITOR, [
                 'id' => $monitor->getId()
             ]);
-        } catch (\Vdhicts\UptimeRobot\Client\Exceptions\FailedRequestException $exception) {
+        } catch (FailedRequestException $exception) {
             $this->logError($exception);
+            throw $exception;
         }
 
-        $response = json_decode($jsonResponse);
+        $response = json_decode($jsonResponse, false);
         if ($response) {
             switch ($response->stat) {
                 case 'ok':
                     return $monitor;
-                    break;
                 default:
-                    return false;
-                    break;
+                    return null;
             }
         }
-        return null;
+
+        throw new FailedRequestException($jsonResponse);
     }
 
     /**
-     * @param $id
+     * @param null $id
+     * @param null $name
+     * @param null $url
      * @param bool $forceRefresh
-     * @return mixed|Monitor|null
+     * @return Monitor|null
+     * @throws FailedRequestException
      */
-    public function find($id = null, $name = null, $url = null, $forceRefresh = false)
+    public function find($id = null, $name = null, $url = null, bool $forceRefresh = false)
     {
         if (empty($this->cachedMonitors) || $forceRefresh) {
             $this->getMonitors();
@@ -252,9 +269,10 @@ class UptimeRobotMonitorService extends UptimeRobotService
      * @param $url
      * @param int $type
      * @param bool $forceRefresh
-     * @return mixed|Monitor|null
+     * @return Monitor|null
+     * @throws FailedRequestException
      */
-    public function findOneByURLAndType($url, $type = Monitor::TYPE_HTTP, $forceRefresh = false)
+    public function findOneByURLAndType($url, int $type = Monitor::TYPE_HTTP, bool $forceRefresh = false)
     {
         if (empty($this->cachedMonitors) || $forceRefresh) {
             $this->getMonitors();
@@ -272,9 +290,13 @@ class UptimeRobotMonitorService extends UptimeRobotService
 
     /**
      * @param Monitor $monitor
-     * @return bool|mixed|Monitor
+     * @param array $alertContacts
+     * @param int $threshold
+     * @param int $recurrence
+     * @return null|Monitor
+     * @throws FailedRequestException
      */
-    public function createOrUpdate(Monitor $monitor, array $alertContacts, $threshold = 0, $recurrence = 0)
+    public function createOrUpdate(Monitor $monitor, array $alertContacts, int $threshold = 0, int $recurrence = 0)
     {
         if ($monitor->isValidObjectForCreate()) {
 
@@ -282,11 +304,11 @@ class UptimeRobotMonitorService extends UptimeRobotService
 
             if ($foundMonitor instanceof Monitor) {
                 return $this->update($foundMonitor, $monitor, $alertContacts, $threshold, $recurrence);
-            } else {
-                return $this->create($monitor, $alertContacts, $threshold, $recurrence);
             }
-        } else {
-            return $monitor->getErrors();
+
+            return $this->create($monitor, $alertContacts, $threshold, $recurrence);
         }
+
+        return null;
     }
 }
