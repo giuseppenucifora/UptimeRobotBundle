@@ -55,6 +55,14 @@ class UptimeRobotApiService
         return !empty($this->apiKey);
     }
 
+    /**
+     * @return string
+     */
+    public function getApiKey(): string
+    {
+        return $this->apiKey;
+    }
+
 
     public function getIo(): SymfonyStyle
     {
